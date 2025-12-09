@@ -49,25 +49,35 @@ const options = {
     }
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
-const data = {
-    labels,
-    datasets: [
-        {
-            label: 'Dataset 1',
-            data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        },
-        {
-            label: 'Dataset 2',
-            data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-        },
-    ],
-};
+interface VerticalBarChartProps {
+    externalLabels?: string[];
+    externalData?: number[];
+    dataLabel?: string;
+}
 
-const VerticalBarChart = () => {
+const VerticalBarChart: React.FC<VerticalBarChartProps> = ({ externalLabels, externalData, dataLabel }) => {
+    const labels = externalLabels || ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    const datasetData = externalData || labels.map(() => faker.number.int({ min: 0, max: 1000 }));
+    const labelTitle = dataLabel || 'Dataset 1';
+
+    const data = {
+        labels,
+        datasets: [
+            {
+                label: labelTitle,
+                data: datasetData,
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            },
+            // Only show second dataset if using default data
+            ...(!externalData ? [{
+                label: 'Dataset 2',
+                data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
+                backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            }] : []),
+        ],
+    };
+
     return <Bar options={options} data={data} />;
 };
 
